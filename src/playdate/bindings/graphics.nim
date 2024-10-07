@@ -124,7 +124,7 @@ sdktype:
 
         setBackgroundColor* {.importc: "setBackgroundColor".}: proc (
             color: LCDSolidColor) {.cdecl, raises: [].}
-        # setStencil* {.importc: "setStencil".}: proc (stencil: ptr LCDBitmap) {.cdecl.} ##  deprecated in favor of setStencilImage, which adds a "tile" flag
+        setStencil* {.importc: "setStencil".}: proc (stencil: ptr LCDBitmapPtr) {.cdecl, raises: [].} ##  deprecated in favor of setStencilImage, which adds a "tile" flag
         setDrawMode* {.importc: "setDrawMode".}: proc (mode: LCDBitmapDrawMode) {.cdecl, raises: [].}
         setDrawOffset {.importsdk.}: proc (dx: cint; dy: cint)
         setClipRect {.importsdk.}: proc (x: cint; y: cint; width: cint; height: cint)

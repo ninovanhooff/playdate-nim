@@ -1,4 +1,5 @@
 import playdate/api
+import std/strutils
 
 const FONT_PATH = "/System/Fonts/Asheville-Sans-14-Bold.pft"
 const NIM_IMAGE_PATH = "/images/nim_logo"
@@ -30,6 +31,7 @@ proc update(): int =
     if kButtonLeft in buttonState.current:
         x -= 10
     if kButtonUp in buttonState.current:
+        playdate.system.error("This is an error message.")
         y -= 10
     if kButtonDown in buttonState.current:
         y += 10
@@ -67,6 +69,10 @@ type
         enemy: bool
         health: int
         equip: seq[Equip]
+
+proc print*(things: varargs[string, `$`]) =
+  ## Print any type by calling $ on it to convert it to string
+  playdate.system.logToConsole(things.join("\t"))
 
 # This is the application entrypoint and event handler
 proc handler(event: PDSystemEvent, keycode: uint) {.raises: [].} =
@@ -152,6 +158,11 @@ proc handler(event: PDSystemEvent, keycode: uint) {.raises: [].} =
 
         # Set the update callback
         playdate.system.setUpdateCallback(update)
+
+    elif event == kEventTerminate or event == kEventLowPower:
+        print "testtest"
+
+
 
 # Used to setup the SDK entrypoint
 initSDK()

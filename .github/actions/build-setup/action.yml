@@ -2,6 +2,7 @@ name: Common build setup
 inputs:
   nim-version:
     required: true
+    description: multi-platform build setup that installs Nim and the Playdate SDK
 runs:
   using: "composite"
   steps:
@@ -10,10 +11,9 @@ runs:
       shell: bash
       run: git config --global --add safe.directory "$(pwd)"
 
-    - name: Install Nim
-      shell: bash
-      run: choosenim -y update ${{ inputs.nim-version }}
-
+    - uses: iffy/install-nim@v5
+      with:
+        version: ${{ inputs.nim-version }}
     - run: nimble --accept refresh
       shell: bash
 
@@ -25,24 +25,16 @@ runs:
       if: ${{ startsWith(inputs.nim-version, '1.') }}
       run: nimble develop
 
-    # Some of the apt dependencies require input from the installer. This disables those
-    # prompts so we can do a headless install
-    - name: Force non-interactive apt installations
-      shell: bash
-      run: echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
+    - name: Install Playdate SDK
+      id: playdate
+      uses: pd-rs/get-playdate-sdk@0.4
+      with:
+        version: latest # possible values: version `x.x.x` or `latest` by default
 
-    - name: Update Apt dependencies
+    - name: print playdate sdk info
       shell: bash
-      run: apt-get update
-
-    - name: Install apt dependencies
-      shell: bash
-      run: apt-get install -y libpng16-16 gcc-arm-none-eabi wget
-
-    - name: Download playdate SDK
-      shell: bash
-      run: wget -qO- https://download.panic.com/playdate_sdk/linux/playdatesdk-latest.tar.gz | tar xvz
-
-    - name: Set PLAYDATE_SDK_PATH
-      shell: bash
-      run: echo "PLAYDATE_SDK_PATH=$(readlink -f $(find PlaydateSDK-* -maxdepth 0 -type d))" >> "$GITHUB_ENV"
+      run: |
+        echo "SDK path env: $PLAYDATE_SDK_PATH"
+        echo "SDK root out: ${{ steps.playdate.outputs.root }}"
+        echo "SDK version: ${{ steps.playdate.outputs.version }}"
+        pdc --version # because SDK/bin already in PATH

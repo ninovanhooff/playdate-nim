@@ -2,6 +2,7 @@ name: Common setup steps for a playdate nimble project
 inputs:
   working-directory:
     required: true
+    description: Install the Example project dependencies
 runs:
   using: "composite"
   steps:

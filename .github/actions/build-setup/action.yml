@@ -13,7 +13,7 @@ runs:
 
     - uses: iffy/install-nim@v5
       with:
-        version: ${{ inputs.nim-version }}
+        version: binary:${{ inputs.nim-version }}
     - run: nimble --accept refresh
       shell: bash
 

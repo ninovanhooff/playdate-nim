@@ -42,9 +42,6 @@ jobs:
   tests:
     runs-on: ubuntu-latest
     container: nimlang/choosenim
-    strategy:
-      matrix:
-        nim-version: [${{ env.DEFAULT_NIM_VERSION }}]
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/actions/build-setup
@@ -58,7 +55,6 @@ jobs:
     container: nimlang/choosenim
     strategy:
       matrix:
-        nim-version: [${{ env.DEFAULT_NIM_VERSION }}]
         build-flags: [noflag, memProfiler, memtrace, memrecord]
     steps:
       - uses: actions/checkout@v3

@@ -94,9 +94,9 @@ jobs:
           export PD_INI_FILE="$PD_INI_DIR/Playdate Simulator.ini"
           echo "ShowPerfWarning=0" > $PD_INI_FILE
           echo "ShowElist=0" >> $PD_INI_FILE
-          echo "LastRelease=$(cat PlaydateSDK-*/VERSION.txt)" >> $PD_INI_FILE
+          echo "LastRelease=$(cat $PLAYDATE_SDK_PATH/VERSION.txt)" >> $PD_INI_FILE
       - name: Run headless test
         working-directory: ./tests
         run: |
           export HOME="/config"
-          xvfb-run ../PlaydateSDK-*/bin/PlaydateSimulator tests.pdx
+          xvfb-run $PLAYDATE_SDK_PATH/bin/PlaydateSimulator tests.pdx

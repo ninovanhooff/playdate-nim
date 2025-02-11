@@ -5,6 +5,8 @@ env:
 
 jobs:
   compile-example-project:
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     strategy:
       matrix:
         os: [windows-latest, macos-latest]
@@ -21,6 +23,8 @@ jobs:
         working-directory: ./playdate_example
 
   run-example-project:
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     strategy:
       matrix:
         target: [device, simulator]
@@ -40,6 +44,8 @@ jobs:
         working-directory: ./playdate_example
 
   tests:
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     runs-on: ubuntu-latest
     container: nimlang/choosenim
     steps:
@@ -52,6 +58,8 @@ jobs:
       - run: nimble test
 
   headless-tests:
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     runs-on: ubuntu-latest
     timeout-minutes: 5
     container: nimlang/choosenim

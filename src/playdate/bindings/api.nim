@@ -16,7 +16,8 @@ type PlaydateAPI* {.importc: "PlaydateAPI", header: "pd_api.h".} = object
 type PDSystemEvent* {.importc: "PDSystemEvent", header: "pd_api.h".} = enum
     kEventInit, kEventInitLua, kEventLock, kEventUnlock, kEventPause, kEventResume,
     kEventTerminate, kEventKeyPressed,
-    kEventKeyReleased, kEventLowPower
+    kEventKeyReleased, kEventLowPower,
+    kEventMirrorStarted, kEventMirrorEnded
 
 var playdate*: ptr PlaydateAPI
 export playdate

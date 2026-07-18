@@ -14,7 +14,7 @@ type
     rank* {.importc: "rank".}: cuint
     value* {.importc: "value".}: cuint
     player* {.importc: "player".}: cstring
-    boardID* {.importc: "boardid".}}: cstring
+    boardID* {.importc: "boardid".}: cstring
 
   PDScorePtr* = ptr PDScoreRaw
 

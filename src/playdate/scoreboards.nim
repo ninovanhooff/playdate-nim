@@ -15,6 +15,7 @@ type
   PDScore* = object of RootObj
     value*, rank*: uint32
     player*: string
+    boardID*: string
 
   PDScoresList* = object of RootObj
     boardID*: string
@@ -74,8 +75,25 @@ template invokeCallback(
     finally:
       freeValue(value)
 
+proc safeCString(raw: cstring): string =
+  ## The Playdate API does not guarantee that boardID is populated on every PDScore.
+  if raw.isNil: "" else: $raw
+
 proc scoreBuilder(score: PDScoreRaw | PDScorePtr): PDScore =
-  PDSCore(value: score.value.uint32, rank: score.rank.uint32, player: $score.player)
+  PDScore(
+    value: score.value.uint32,
+    rank: score.rank.uint32,
+    player: $score.player,
+    boardID: safeCString(score.boardID),
+  )
+
+proc scoreBuilder(score: PDListScoreRaw, boardID: string): PDScore =
+  ## Entries within a PDScoresList (PDListScore) don't carry their own boardID,
+  ## since they all belong to the list's boardID.
+  PDScore(
+    value: score.value.uint32, rank: score.rank.uint32, player: $score.player,
+    boardID: boardID,
+  )
 
 proc invokePersonalBestCallback(
     score: PDScorePtr, errorMessage: ConstChar
@@ -100,13 +118,10 @@ proc invokeScoresCallback(
     privateScoresCallbacks, scoresList, errorMessage,
     playdate.scoreboards.freeScoresList,
   ):
+    let boardID = $scoresList.boardID
     let scoresSeq =
-      scoresList.scores.items(scoresList.count).toSeq.mapIt(scoreBuilder(it))
-    PDScoresList(
-      boardID: $scoresList.boardID,
-      lastUpdated: scoresList.lastUpdated,
-      scores: scoresSeq,
-    )
+      scoresList.scores.items(scoresList.count).toSeq.mapIt(scoreBuilder(it, boardID))
+    PDScoresList(boardID: boardID, lastUpdated: scoresList.lastUpdated, scores: scoresSeq)
 
 proc invokeBoardsListCallback(
     boardsList: PDBoardsListPtr, errorMessage: ConstChar
